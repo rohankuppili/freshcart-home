@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Category } from "@/types";
 import { cn } from "@/lib/utils";
+import { recordCategoryUsage } from "@/lib/usage";
 
 interface CategoryTileProps {
   category: Category;
@@ -20,6 +21,7 @@ const CategoryTile: React.FC<CategoryTileProps> = ({ category, className, style 
         className
       )}
       style={style}
+      onClick={() => recordCategoryUsage(category.id, 1)}
     >
       {/* Background Image */}
       <div className="absolute inset-0">

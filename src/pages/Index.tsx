@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Leaf, Truck, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CategoryTile from "@/components/CategoryTile";
 import { categories } from "@/data/mockData";
+import { getCategoryUsageMap } from "@/lib/usage";
 
 const Index: React.FC = () => {
   return (
@@ -101,23 +102,69 @@ const Index: React.FC = () => {
             </Link>
           </div>
 
-          {/* Modular Grid - Using CSS Grid with different spans */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-            {categories.slice(0, 6).map((category, index) => (
-              <CategoryTile
-                key={category.id}
-                category={category}
-                className={
-                  index === 0
-                    ? "col-span-2 row-span-2 min-h-[300px] md:min-h-[400px]"
-                    : "min-h-[180px] md:min-h-[200px]"
-                }
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                }}
-              />
-            ))}
-          </div>
+          {/* Usage-based ordering and sizes */}
+          {(() => {
+            const usage = getCategoryUsageMap();
+            const sorted = [...categories].sort((a, b) => {
+              const ua = usage[a.id] || 0;
+              const ub = usage[b.id] || 0;
+              if (ub !== ua) return ub - ua; // higher usage first
+              // tie-breaker: more products first, then name
+              if (b.productCount !== a.productCount) return b.productCount - a.productCount;
+              return a.name.localeCompare(b.name);
+            });
+
+            const [top, ...rest] = sorted;
+            const medium = rest.slice(0, 5);
+            const small = rest.slice(5);
+
+            return (
+              <>
+                {/* Top category - large tile */}
+                {top && (
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6 mb-6">
+                    <CategoryTile
+                      key={top.id}
+                      category={top}
+                      className="col-span-2 row-span-2 min-h-[300px] md:min-h-[420px]"
+                      style={{ animationDelay: `0ms` }}
+                    />
+                    {/* Fillers for grid alignment on larger screens */}
+                    <div className="hidden md:block" />
+                    <div className="hidden md:block" />
+                  </div>
+                )}
+
+                {/* Medium tiles */}
+                {medium.length > 0 && (
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+                    {medium.map((category, index) => (
+                      <CategoryTile
+                        key={category.id}
+                        category={category}
+                        className="min-h-[180px] md:min-h-[220px]"
+                        style={{ animationDelay: `${(index + 1) * 100}ms` }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Small icons grid */}
+                {small.length > 0 && (
+                  <div className="mt-6 grid grid-cols-3 gap-3 md:grid-cols-6 md:gap-4">
+                    {small.map((category, index) => (
+                      <CategoryTile
+                        key={category.id}
+                        category={category}
+                        className="min-h-[110px] md:min-h-[130px]"
+                        style={{ animationDelay: `${(index + medium.length + 1) * 80}ms` }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           <div className="mt-8 text-center md:hidden">
             <Link to="/categories">

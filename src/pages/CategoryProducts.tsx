@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { categories, products } from "@/data/mockData";
+import { recordCategoryUsage } from "@/lib/usage";
 
 const CategoryProducts: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   
   const category = categories.find((c) => c.id === categoryId);
   const categoryProducts = products.filter((p) => p.category === categoryId);
+
+  // Record a visit to this category page to boost its prominence on home
+  useEffect(() => {
+    if (categoryId) recordCategoryUsage(categoryId, 2);
+  }, [categoryId]);
 
   if (!category) {
     return (

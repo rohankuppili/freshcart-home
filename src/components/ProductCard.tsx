@@ -4,6 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { Plus, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { recordCategoryUsage } from "@/lib/usage";
 
 interface ProductCardProps {
   product: Product;
@@ -53,7 +54,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
             
             <Button
-              onClick={() => addToCart(product)}
+              onClick={() => {
+                addToCart(product);
+                // Boost category usage when items are shopped
+                if (product.category) recordCategoryUsage(product.category, 3);
+              }}
               disabled={!product.inStock}
               size="sm"
               className={cn(
