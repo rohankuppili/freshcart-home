@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PlanMealDialog from "@/components/PlanMealDialog";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,10 @@ const Header: React.FC = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
+          {/* AI Planner */}
+          <PlanMealDialog
+            trigger={<Button variant="outline" className="hidden md:inline-flex">Plan with AI</Button>}
+          />
           {/* Cart Button */}
           <Link to="/cart">
             <Button variant="ghost" size="icon" className="relative">
