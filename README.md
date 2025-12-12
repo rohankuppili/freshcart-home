@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+FreshCart – Modern Grocery Shopping UI
 
-## Project info
+FreshCart is a clean, modern, and responsive grocery-store web interface built using React, TypeScript, Vite, and TailwindCSS with shadcn-ui components.
+The goal of this project is to demonstrate an intuitive shopping experience with product browsing, deals and offers, category filtering, and a visually engaging layout suitable for real-world grocery e-commerce applications.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This repository currently contains the frontend only. It can be connected to any backend API (Node.js, Firebase, json-server, etc.) depending on your needs.
 
-## How can I edit this code?
+✨ Features
 
-There are several ways of editing your application.
+🛒 Modern grocery-store home page UI
 
-**Use Lovable**
+📦 Product listings and categories
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+🎨 Beautifully styled using TailwindCSS + shadcn-ui
 
-Changes made via Lovable will be committed automatically to this repo.
+⚡ Fast development experience with Vite
 
-**Use your preferred IDE**
+📱 Fully responsive design for mobile & desktop
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+🌐 Ready to integrate with any REST API or database backend
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+📁 Tech Stack
+Layer	Technology
+Frontend Framework	React + Vite
+Language	TypeScript
+Styling	TailwindCSS, shadcn-ui
+Icons	Lucide Icons
+Backend (Optional)	Your choice — Node/Express, Firebase, json-server, etc.
+🚀 Getting Started
+1. Clone the repository
+git clone https://github.com/rohankuppili/freshcart-home.git
+cd freshcart-home
 
-Follow these steps:
+2. Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Run the development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Your app will start at:
 
-**Use GitHub Codespaces**
+http://localhost:5173
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🗄 Database / Backend Integration
 
-## What technologies are used for this project?
+This project does not include a backend.
+You can connect any database or API. Some common approaches:
 
-This project is built with:
+Option A – Mock API (json-server)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Quick and easy for development.
 
-## How can I deploy this project?
+Option B – Firebase Firestore
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Great for hosted serverless backend and authentication.
 
-## Can I connect a custom domain to my Lovable project?
+Option C – Node.js + Express + MongoDB / PostgreSQL
 
-Yes, you can!
+Ideal for full production systems.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+If you want, I can generate the backend folder structure and API templates for you.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+👥 Project Owners
+
+1. Rohan Kuppili
+Founder & Lead Developer – UI/UX and architecture.
+
+2. Tamanna Dash
+Design & Quality – Visual design, user experience, responsiveness.
+
+3. Priyanshu Arora
+Developer – Integration, enhancements, documentation.
+
+📌 Roadmap
+
+Add authentication (Firebase/Auth0/JWT)
+
+Add real product CRUD via backend
+
+Shopping cart functionality
+
+Add dynamic offers and pricing logic
+
+Implement payments integration (Razorpay/Stripe)
