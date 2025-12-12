@@ -6,6 +6,8 @@ import { Plus, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { recordCategoryUsage } from "@/lib/usage";
 
+const PLACEHOLDER = (import.meta as any).env?.VITE_PLACEHOLDER_IMAGE || "/placeholder.svg";
+
 interface ProductCardProps {
   product: Product;
 }
@@ -20,8 +22,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-secondary/30">
         <img
-          src={product.image}
+          src={product.image || PLACEHOLDER}
           alt={product.name}
+          onError={(e) => {
+            const target = e.currentTarget as HTMLImageElement
+            if (target.src.indexOf(PLACEHOLDER) === -1) {
+              target.src = PLACEHOLDER
+            }
+          }}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {!product.inStock && (

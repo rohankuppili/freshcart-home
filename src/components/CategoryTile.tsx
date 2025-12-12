@@ -4,6 +4,8 @@ import { Category } from "@/types";
 import { cn } from "@/lib/utils";
 import { recordCategoryUsage } from "@/lib/usage";
 
+const PLACEHOLDER = (import.meta as any).env?.VITE_PLACEHOLDER_IMAGE || "/placeholder.svg";
+
 interface CategoryTileProps {
   category: Category;
   className?: string;
@@ -26,8 +28,14 @@ const CategoryTile: React.FC<CategoryTileProps> = ({ category, className, style 
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={category.image}
+          src={category.image || PLACEHOLDER}
           alt={category.name}
+          onError={(e) => {
+            const target = e.currentTarget as HTMLImageElement
+            if (target.src.indexOf(PLACEHOLDER) === -1) {
+              target.src = PLACEHOLDER
+            }
+          }}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         {/* Gradient Overlay */}

@@ -2,21 +2,48 @@ import React, { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
-import { categories, products } from "@/data/mockData";
 import { recordCategoryUsage } from "@/lib/usage";
+import { useQuery } from "@tanstack/react-query";
+
+const API_URL = (import.meta as any).env?.VITE_API_URL || "http://localhost:4000";
 
 const CategoryProducts: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   
-  const category = categories.find((c) => c.id === categoryId);
-  const categoryProducts = products.filter((p) => p.category === categoryId);
+  const { data: category, isLoading: catLoading, error: catError } = useQuery({
+    queryKey: ["category", categoryId],
+    enabled: !!categoryId,
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/categories/${categoryId}`);
+      if (!res.ok) throw new Error("Failed to load category");
+      return res.json();
+    },
+  });
+
+  const { data: categoryProducts = [], isLoading: prodLoading, error: prodError } = useQuery({
+    queryKey: ["products", categoryId],
+    enabled: !!categoryId,
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/products?category=${categoryId}`);
+      if (!res.ok) throw new Error("Failed to load products");
+      return res.json();
+    },
+  });
 
   // Record a visit to this category page to boost its prominence on home
   useEffect(() => {
     if (categoryId) recordCategoryUsage(categoryId, 2);
   }, [categoryId]);
 
-  if (!category) {
+  if (catLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p className="text-muted-foreground">Loading category...</p>
+      </div>
+    );
+  }
+
+  if (catError || !category) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center">
         <h1 className="font-display text-2xl font-bold text-foreground">
@@ -69,7 +96,11 @@ const CategoryProducts: React.FC = () => {
         </div>
 
         {/* Products Grid */}
-        {categoryProducts.length > 0 ? (
+        {prodLoading ? (
+          <div className="py-16 text-center">
+            <p className="text-muted-foreground">Loading products...</p>
+          </div>
+        ) : categoryProducts.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 lg:grid-cols-4">
             {categoryProducts.map((product, index) => (
               <div

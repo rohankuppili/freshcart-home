@@ -3,10 +3,34 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Leaf, Truck, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CategoryTile from "@/components/CategoryTile";
-import { categories } from "@/data/mockData";
+import { useQuery } from "@tanstack/react-query";
 import { getCategoryUsageMap } from "@/lib/usage";
 
+const API_URL = (import.meta as any).env?.VITE_API_URL || "http://localhost:4000";
+
 const Index: React.FC = () => {
+  const { data: apiCategories = [], isLoading, error } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/categories`);
+      if (!res.ok) throw new Error("Failed to load categories");
+      return res.json();
+    },
+  });
+
+  const usage = getCategoryUsageMap();
+  const sorted = [...apiCategories].sort((a, b) => {
+    const ua = usage[a.id] || 0;
+    const ub = usage[b.id] || 0;
+    if (ub !== ua) return ub - ua; // higher usage first
+    if (b.productCount !== a.productCount) return b.productCount - a.productCount;
+    return a.name.localeCompare(b.name);
+  });
+
+  const [top, ...rest] = sorted;
+  const medium = rest.slice(0, 5);
+  const small = rest.slice(5);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -103,23 +127,10 @@ const Index: React.FC = () => {
           </div>
 
           {/* Usage-based ordering and sizes */}
-          {(() => {
-            const usage = getCategoryUsageMap();
-            const sorted = [...categories].sort((a, b) => {
-              const ua = usage[a.id] || 0;
-              const ub = usage[b.id] || 0;
-              if (ub !== ua) return ub - ua; // higher usage first
-              // tie-breaker: more products first, then name
-              if (b.productCount !== a.productCount) return b.productCount - a.productCount;
-              return a.name.localeCompare(b.name);
-            });
-
-            const [top, ...rest] = sorted;
-            const medium = rest.slice(0, 5);
-            const small = rest.slice(5);
-
-            return (
-              <>
+          {isLoading && <p className="text-muted-foreground">Loading categories...</p>}
+          {error && <p className="text-destructive">Failed to load categories</p>}
+          {!isLoading && !error && (
+            <>
                 {/* Top category - large tile */}
                 {top && (
                   <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6 mb-6">
@@ -162,9 +173,8 @@ const Index: React.FC = () => {
                     ))}
                   </div>
                 )}
-              </>
-            );
-          })()}
+            </>
+          )}
 
           <div className="mt-8 text-center md:hidden">
             <Link to="/categories">
